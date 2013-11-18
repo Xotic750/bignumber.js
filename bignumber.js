@@ -1,4 +1,8 @@
 /* bignumber.js v1.3.0 https://github.com/MikeMcl/bignumber.js/LICENCE */
+
+/*jslint ass: true, bitwise: true, plusplus: true, sub: true, white: true, maxerr: 500 */
+/*global module, define */
+
 ;(function ( global ) {
     'use strict';
 
@@ -111,15 +115,15 @@
                 x['s'] = n['s'];
                 x['e'] = n['e'];
                 x['c'] = ( n = n['c'] ) ? n.slice() : n;
-                return
+                return;
             }
         }
 
         // If number, check if minus zero.
-        if ( typeof n != 'string' ) {
-            n = ( isNum = typeof n == 'number' ||
-                Object.prototype.toString.call(n) == '[object Number]' ) &&
-                    n === 0 && 1 / n < 0 ? '-0' : n + ''
+        if ( typeof n !== 'string' ) {
+            n = ( isNum = typeof n === 'number' ||
+                Object.prototype.toString.call(n) === '[object Number]' ) &&
+                    n === 0 && 1 / n < 0 ? '-0' : n + '';
         }
 
         orig = n;
@@ -127,25 +131,25 @@
         if ( b === e && isValid.test(n) ) {
 
             // Determine sign.
-            x['s'] = n.charAt(0) == '-' ? ( n = n.slice(1), -1 ) : 1
+            x['s'] = n.charAt(0) === '-' ? ( n = n.slice(1), -1 ) : 1;
 
         // Either n is not a valid BigNumber or a base has been specified.
         } else {
 
             // Enable exponential notation to be used with base 10 argument.
             // Ensure return value is rounded to DECIMAL_PLACES as with other bases.
-            if ( b == 10 ) {
+            if ( b === 10 ) {
 
-                return setMode( n, DECIMAL_PLACES, ROUNDING_MODE )
+                return setMode( n, DECIMAL_PLACES, ROUNDING_MODE );
             }
 
             n = trim.call(n).replace( /^\+(?!-)/, '' );
 
-            x['s'] = n.charAt(0) == '-' ? ( n = n.replace( /^-(?!-)/, '' ), -1 ) : 1;
+            x['s'] = n.charAt(0) === '-' ? ( n = n.replace( /^-(?!-)/, '' ), -1 ) : 1;
 
-            if ( b != null ) {
+            if ( b !== null && typeof b !== 'undefined') {
 
-                if ( ( b == (b | 0) || !ERRORS ) &&
+                if ( ( ( +b ) === (b | 0) || !ERRORS ) &&
                   !( outOfRange = !( b >= 2 && b < 65 ) ) ) {
 
                     digits = '[' + DIGITS.slice( 0, b = b | 0 ) + ']+';
@@ -163,19 +167,19 @@
                             if ( n.replace( /^0\.0*|\./, '' ).length > 15 ) {
 
                                 // 'new BigNumber() number type has more than 15 significant digits: {n}'
-                                ifExceptionsThrow( orig, 0 )
+                                ifExceptionsThrow( orig, 0 );
                             }
 
                             // Prevent later check for length on converted number.
-                            isNum = !isNum
+                            isNum = !isNum;
                         }
-                        n = convert( n, 10, b, x['s'] )
+                        n = convert( n, 10, b, x['s'] );
 
-                    } else if ( n != 'Infinity' && n != 'NaN' ) {
+                    } else if ( n !== 'Infinity' && n !== 'NaN' ) {
 
                         // 'new BigNumber() not a base {b} number: {n}'
                         ifExceptionsThrow( orig, 1, b );
-                        n = 'NaN'
+                        n = 'NaN';
                     }
                 } else {
 
@@ -184,10 +188,10 @@
                     ifExceptionsThrow( b, 2 );
 
                     // Ignore base.
-                    valid = isValid.test(n)
+                    valid = isValid.test(n);
                 }
             } else {
-                valid = isValid.test(n)
+                valid = isValid.test(n);
             }
 
             if ( !valid ) {
@@ -196,25 +200,25 @@
                 x['c'] = x['e'] = null;
 
                 // NaN
-                if ( n != 'Infinity' ) {
+                if ( n !== 'Infinity' ) {
 
                     // No exception on NaN.
-                    if ( n != 'NaN' ) {
+                    if ( n !== 'NaN' ) {
 
                         // 'new BigNumber() not a number: {n}'
-                        ifExceptionsThrow( orig, 3 )
+                        ifExceptionsThrow( orig, 3 );
                     }
-                    x['s'] = null
+                    x['s'] = null;
                 }
                 id = 0;
 
-                return
+                return;
             }
         }
 
         // Decimal point?
         if ( ( e = n.indexOf('.') ) > -1 ) {
-            n = n.replace( '.', '' )
+            n = n.replace( '.', '' );
         }
 
         // Exponential form?
@@ -222,19 +226,19 @@
 
             // Determine exponent.
             if ( e < 0 ) {
-                e = i
+                e = i;
             }
             e += +n.slice( i + 1 );
-            n = n.substring( 0, i )
+            n = n.substring( 0, i );
 
         } else if ( e < 0 ) {
 
             // Integer.
-            e = n.length
+            e = n.length;
         }
 
         // Determine leading zeros.
-        for ( i = 0; n.charAt(i) == '0'; i++ ) {
+        for ( i = 0; n.charAt(i) === '0'; i++ ) {
         }
 
         b = n.length;
@@ -243,7 +247,7 @@
         if ( isNum && b > 15 && n.slice(i).length > 15 ) {
 
             // 'new BigNumber() number type has more than 15 significant digits: {n}'
-            ifExceptionsThrow( orig, 0 )
+            ifExceptionsThrow( orig, 0 );
         }
         id = 0;
 
@@ -251,17 +255,17 @@
         if ( ( e -= i + 1 ) > MAX_EXP ) {
 
             // Infinity.
-            x['c'] = x['e'] = null
+            x['c'] = x['e'] = null;
 
         // Zero or underflow?
-        } else if ( i == b || e < MIN_EXP ) {
+        } else if ( i === b || e < MIN_EXP ) {
 
             // Zero.
-            x['c'] = [ x['e'] = 0 ]
+            x['c'] = [ x['e'] = 0 ];
         } else {
 
             // Determine trailing zeros.
-            for ( ; n.charAt(--b) == '0'; ) {
+            for ( ; n.charAt(--b) === '0'; ) {
             }
 
             x['e'] = e;
@@ -311,22 +315,22 @@
             c = 'config',
             inRange = function ( n, lo, hi ) {
               return !( ( outOfRange = n < lo || n > hi ) ||
-                parse(n) != n && n !== 0 )
+                parse(n) !== ( +n ) && n !== 0 );
             },
-            has = o && typeof o == 'object'
-              ? function () {if ( o.hasOwnProperty(p) ) return ( v = o[p] ) != null}
-              : function () {if ( a.length > i ) return ( v = a[i++] ) != null};
+            has = o && typeof o === 'object'
+              ? function () {if ( o.hasOwnProperty(p) ) return ( v = o[p] ) !== null && typeof v !== 'undefined'}
+              : function () {if ( a.length > i ) return ( v = a[i++] ) !== null && typeof v !== 'undefined'};
 
         // [DECIMAL_PLACES] {number} Integer, 0 to MAX inclusive.
         if ( has( p = 'DECIMAL_PLACES' ) ) {
 
             if ( inRange( v, 0, MAX ) ) {
-                DECIMAL_PLACES = v | 0
+                DECIMAL_PLACES = v | 0;
             } else {
 
                 // 'config() DECIMAL_PLACES not an integer: {v}'
                 // 'config() DECIMAL_PLACES out of range: {v}'
-                ifExceptionsThrow( v, p, c )
+                ifExceptionsThrow( v, p, c );
             }
         }
         r[p] = DECIMAL_PLACES;
@@ -335,12 +339,12 @@
         if ( has( p = 'ROUNDING_MODE' ) ) {
 
             if ( inRange( v, 0, 8 ) ) {
-                ROUNDING_MODE = v | 0
+                ROUNDING_MODE = v | 0;
             } else {
 
                 // 'config() ROUNDING_MODE not an integer: {v}'
                 // 'config() ROUNDING_MODE out of range: {v}'
-                ifExceptionsThrow( v, p, c )
+                ifExceptionsThrow( v, p, c );
             }
         }
         r[p] = ROUNDING_MODE;
@@ -352,15 +356,16 @@
         if ( has( p = 'EXPONENTIAL_AT' ) ) {
 
             if ( inRange( v, -MAX, MAX ) ) {
-                TO_EXP_NEG = -( TO_EXP_POS = ~~( v < 0 ? -v : +v ) )
+                TO_EXP_NEG = -( TO_EXP_POS = ~~( v < 0 ? -v : +v ) );
             } else if ( !outOfRange && v && inRange( v[0], -MAX, 0 ) &&
               inRange( v[1], 0, MAX ) ) {
-                TO_EXP_NEG = ~~v[0], TO_EXP_POS = ~~v[1]
+                TO_EXP_NEG = ~~v[0];
+                TO_EXP_POS = ~~v[1];
             } else {
 
                 // 'config() EXPONENTIAL_AT not an integer or not [integer, integer]: {v}'
                 // 'config() EXPONENTIAL_AT out of range or not [negative, positive: {v}'
-                ifExceptionsThrow( v, p, c, 1 )
+                ifExceptionsThrow( v, p, c, 1 );
             }
         }
         r[p] = [ TO_EXP_NEG, TO_EXP_POS ];
@@ -372,15 +377,15 @@
         if ( has( p = 'RANGE' ) ) {
 
             if ( inRange( v, -MAX, MAX ) && ~~v ) {
-                MIN_EXP = -( MAX_EXP = ~~( v < 0 ? -v : +v ) )
+                MIN_EXP = -( MAX_EXP = ~~( v < 0 ? -v : +v ) );
             } else if ( !outOfRange && v && inRange( v[0], -MAX, -1 ) &&
               inRange( v[1], 1, MAX ) ) {
-                MIN_EXP = ~~v[0], MAX_EXP = ~~v[1]
+                MIN_EXP = ~~v[0], MAX_EXP = ~~v[1];
             } else {
 
                 // 'config() RANGE not a non-zero integer or not [integer, integer]: {v}'
                 // 'config() RANGE out of range or not [negative, positive: {v}'
-                ifExceptionsThrow( v, p, c, 1, 1 )
+                ifExceptionsThrow( v, p, c, 1, 1 );
             }
         }
         r[p] = [ MIN_EXP, MAX_EXP ];
@@ -391,16 +396,16 @@
             if ( v === !!v || v === 1 || v === 0 ) {
                 parse = ( outOfRange = id = 0, ERRORS = !!v )
                   ? parseInt
-                  : parseFloat
+                  : parseFloat;
             } else {
 
                 // 'config() ERRORS not a boolean or binary digit: {v}'
-                ifExceptionsThrow( v, p, c, 0, 0, 1 )
+                ifExceptionsThrow( v, p, c, 0, 0, 1 );
             }
         }
         r[p] = ERRORS;
 
-        return r
+        return r;
     };
 
 
@@ -435,7 +440,7 @@
             error = new Error(message);
             error['name'] = 'BigNumber Error';
 
-            throw error
+            throw error;
         }
     }
 
@@ -467,16 +472,16 @@
 
                     if ( arr[j] > baseOut - 1 ) {
 
-                        if ( arr[j + 1] == null ) {
-                            arr[j + 1] = 0
+                        if ( arr[j + 1] === null || typeof arr[j + 1] === 'undefined' ) {
+                            arr[j + 1] = 0;
                         }
                         arr[j + 1] += arr[j] / baseOut ^ 0;
-                        arr[j] %= baseOut
+                        arr[j] %= baseOut;
                     }
                 }
             }
 
-            return arr.reverse()
+            return arr.reverse();
         }
 
         // Convert array to string.
@@ -489,11 +494,11 @@
             for ( ; i < arrL; str += DIGITS.charAt( arr[i++] ) ) {
             }
 
-            return str
+            return str;
         }
 
         if ( baseIn < 37 ) {
-            nStr = nStr.toLowerCase()
+            nStr = nStr.toLowerCase();
         }
 
         /*
@@ -536,7 +541,7 @@
                 }
 
                 // Append the fraction part to the converted integer part.
-                nStr = arrToStr(nArr) + '.' + arrToStr(fracArr)
+                nStr = arrToStr(nArr) + '.' + arrToStr(fracArr);
 
             // fracArr is [1].
             // Fraction digits rounded up, so increment last digit of integer part.
@@ -544,23 +549,23 @@
 
                 if ( nArr[ e = nArr.length - 1 ] < baseOut - 1 ) {
                     ++nArr[e];
-                    nStr = arrToStr(nArr)
+                    nStr = arrToStr(nArr);
                 } else {
                     nStr = new BigNumber( arrToStr(nArr),
-                      baseOut )['plus'](ONE)['toS'](baseOut)
+                      baseOut )['plus'](ONE)['toS'](baseOut);
                 }
 
             // fracArr is [0]. No fraction digits.
             } else {
-                nStr = arrToStr(nArr)
+                nStr = arrToStr(nArr);
             }
         } else {
 
             // Simple integer. Convert base.
-            nStr = arrToStr( strToArr(nStr) )
+            nStr = arrToStr( strToArr(nStr) );
         }
 
-        return nStr
+        return nStr;
     }
 
 
@@ -593,14 +598,14 @@
             for ( next = 0; next < base; next++ ) {
 
                 // Compare divisor and remainder.
-                if ( dvsL != ( remL = rem.length ) ) {
-                    cmp = dvsL > remL ? 1 : -1
+                if ( dvsL !== ( remL = rem.length ) ) {
+                    cmp = dvsL > remL ? 1 : -1;
                 } else {
                     for ( remI = -1, cmp = 0; ++remI < dvsL; ) {
 
-                        if ( dvs[remI] != rem[remI] ) {
+                        if ( dvs[remI] !== rem[remI] ) {
                             cmp = dvs[remI] > rem[remI] ? 1 : -1;
-                            break
+                            break;
                         }
                     }
                 }
@@ -610,7 +615,7 @@
 
                     // Remainder cannot be more than one digit longer than divisor.
                     // Equalise lengths using divisor with extra leading zero?
-                    for ( dvsT = remL == dvsL ? dvs : dvsZ; remL; ) {
+                    for ( dvsT = remL === dvsL ? dvs : dvsZ; remL; ) {
 
                         if ( rem[--remL] < dvsT[remL] ) {
 
@@ -619,14 +624,14 @@
                                 rem[remI] = base - 1 ) {
                             }
                             --rem[remI];
-                            rem[remL] += base
+                            rem[remL] += base;
                         }
-                        rem[remL] -= dvsT[remL]
+                        rem[remL] -= dvsT[remL];
                     }
                     for ( ; !rem[0]; rem.shift() ) {
                     }
                 } else {
-                    break
+                    break;
                 }
             }
 
@@ -636,37 +641,37 @@
             // Update the remainder.
             rem[0] && cmp
               ? ( rem[remL] = dvd[dvdI] || 0 )
-              : ( rem = [ dvd[dvdI] ] )
+              : ( rem = [ dvd[dvdI] ] );
 
-        } while ( ( dvdI++ < dvdL || rem[0] != null ) && s-- );
+        } while ( ( dvdI++ < dvdL || (rem[0] !== null && typeof rem[0] !== 'undefined' ) ) && s-- );
 
         // Leading zero? Do not remove if result is simply zero (qi == 1).
-        if ( !qc[0] && qi != 1 ) {
+        if ( !qc[0] && qi !== 1 ) {
 
             // There can't be more than one zero.
             --quo['e'];
-            qc.shift()
+            qc.shift();
         }
 
         // Round?
         if ( qi > dig ) {
-            rnd( quo, DECIMAL_PLACES, base, isOdd, rem[0] != null )
+            rnd( quo, DECIMAL_PLACES, base, isOdd, rem[0] !== null && typeof rem[0] !== 'undefined' );
         }
 
         // Overflow?
         if ( quo['e'] > MAX_EXP ) {
 
             // Infinity.
-            quo['c'] = quo['e'] = null
+            quo['c'] = quo['e'] = null;
 
         // Underflow?
         } else if ( quo['e'] < MIN_EXP ) {
 
             // Zero.
-            quo['c'] = [quo['e'] = 0]
+            quo['c'] = [quo['e'] = 0];
         }
 
-        return quo
+        return quo;
     }
 
 
@@ -686,16 +691,16 @@
 
         // +-Infinity or NaN?
         if ( !c ) {
-            return n['toS']()
+            return n['toS']();
         }
 
         // Round?
         if ( c.length > ++d ) {
-            rnd( n, i, 10 )
+            rnd( n, i, 10 );
         }
 
         // Recalculate d if toFixed as n['e'] may have changed if value rounded up.
-        i = c[0] == 0 ? i + 1 : exp ? d : n['e'] + i + 1;
+        i = c[0] === 0 ? i + 1 : exp ? d : n['e'] + i + 1;
 
         // Append zeros?
         for ( ; c.length < i; c.push(0) ) {
@@ -707,7 +712,7 @@
          * digits specified is less than the number of digits necessary to
          * represent the integer part of the value in normal notation.
          */
-        return exp == 1 || exp == 2 && ( --d < i || i <= TO_EXP_NEG )
+        return exp === 1 || exp === 2 && ( --d < i || i <= TO_EXP_NEG )
 
           // Exponential notation.
           ? ( n['s'] < 0 && c[0] ? '-' : '' ) + ( c.length > 1
@@ -715,7 +720,7 @@
             : c[0] ) + ( i < 0 ? 'e' : 'e+' ) + i
 
           // Normal notation.
-          : n['toS']()
+          : n['toS']();
     }
 
 
@@ -738,24 +743,24 @@
              * 0.5 (e = -1) dp = 0 gives i = 0
              * The 'next' digit is 5 and there are no 'more' digits after it.
              */
-            more = r || i < 0 || xc[i + 1] != null;
+            more = r || i < 0 || (xc[i + 1] !== null && typeof xc[i + 1] !== 'undefined');
 
         r = ROUNDING_MODE < 4
-          ? ( next != null || more ) &&
-            ( ROUNDING_MODE == 0 ||
-               ROUNDING_MODE == 2 && !isNeg ||
-                 ROUNDING_MODE == 3 && isNeg )
-          : next > half || next == half &&
-            ( ROUNDING_MODE == 4 || more ||
+          ? ( ( next !== null && typeof next !== 'undefined') || more ) &&
+            ( ROUNDING_MODE === 0 ||
+               ROUNDING_MODE === 2 && !isNeg ||
+                 ROUNDING_MODE === 3 && isNeg )
+          : next > half || next === half &&
+            ( ROUNDING_MODE === 4 || more ||
 
               /*
                * isOdd is used in base conversion and refers to the least significant
                * digit of the integer part of the value to be converted. The fraction
                * part is rounded by this method separately from the integer part.
                */
-              ROUNDING_MODE == 6 && ( xc[i - 1] & 1 || !dp && isOdd ) ||
-                ROUNDING_MODE == 7 && !isNeg ||
-                  ROUNDING_MODE == 8 && isNeg );
+              ROUNDING_MODE === 6 && ( xc[i - 1] & 1 || !dp && isOdd ) ||
+                ROUNDING_MODE === 7 && !isNeg ||
+                  ROUNDING_MODE === 8 && isNeg );
 
         if ( i < 1 || !xc[0] ) {
             xc.length = 0;
@@ -765,14 +770,14 @@
 
                 // 1, 0.1, 0.01, 0.001, 0.0001 etc.
                 xc[0] = 1;
-                x['e'] = -dp
+                x['e'] = -dp;
             } else {
 
                 // Zero.
-                x['e'] = 0
+                x['e'] = 0;
             }
 
-            return x
+            return x;
         }
 
         // Remove any digits after the required decimal places.
@@ -787,7 +792,7 @@
 
                 if ( !i-- ) {
                     ++x['e'];
-                    xc.unshift(1)
+                    xc.unshift(1);
                 }
             }
         }
@@ -796,7 +801,7 @@
         for ( i = xc.length; !xc[--i]; xc.pop() ) {
         }
 
-        return x
+        return x;
     }
 
 
@@ -810,7 +815,7 @@
         x['c'] && rnd( x, dp, 10 );
         ROUNDING_MODE = r;
 
-        return x
+        return x;
     }
 
 
@@ -824,10 +829,10 @@
         var x = new BigNumber(this);
 
         if ( x['s'] < 0 ) {
-            x['s'] = 1
+            x['s'] = 1;
         }
 
-        return x
+        return x;
     };
 
 
@@ -836,7 +841,7 @@
      * rounded to a whole number in the direction of Infinity.
      */
     P['ceil'] = function () {
-        return setMode( this, 0, 2 )
+        return setMode( this, 0, 2 );
     };
 
 
@@ -859,29 +864,29 @@
 
         // Either NaN?
         if ( !i || !j ) {
-            return null
+            return null;
         }
 
         a = xc && !xc[0], b = yc && !yc[0];
 
         // Either zero?
         if ( a || b ) {
-            return a ? b ? 0 : -j : i
+            return a ? b ? 0 : -j : i;
         }
 
         // Signs differ?
-        if ( i != j ) {
-            return i
+        if ( i !== j ) {
+            return i;
         }
 
         // Either Infinity?
-        if ( a = i < 0, b = k == l, !xc || !yc ) {
-            return b ? 0 : !xc ^ a ? 1 : -1
+        if ( a = i < 0, b = k === l, !xc || !yc ) {
+            return b ? 0 : !xc ^ a ? 1 : -1;
         }
 
         // Compare exponents.
         if ( !b ) {
-            return k > l ^ a ? 1 : -1
+            return k > l ^ a ? 1 : -1;
         }
 
         // Compare digit by digit.
@@ -889,12 +894,12 @@
               j = ( k = xc.length ) < ( l = yc.length ) ? k : l;
               ++i < j; ) {
 
-            if ( xc[i] != yc[i] ) {
-                return xc[i] > yc[i] ^ a ? 1 : -1
+            if ( xc[i] !== yc[i] ) {
+                return xc[i] > yc[i] ^ a ? 1 : -1;
             }
         }
         // Compare lengths.
-        return k == l ? 0 : k > l ^ a ? 1 : -1
+        return k === l ? 0 : k > l ^ a ? 1 : -1;
     };
 
 
@@ -926,7 +931,7 @@
             yc = ( id = 2, y = new BigNumber( y, b ) )['c'],
             ye = y['e'],
             ys = y['s'],
-            s = xs == ys ? 1 : -1;
+            s = xs === ys ? 1 : -1;
 
         // Either NaN/Infinity/0?
         return !xe && ( !xc || !xc[0] ) || !ye && ( !yc || !yc[0] )
@@ -935,13 +940,13 @@
           ? new BigNumber( !xs || !ys ||
 
             // Both 0 or both Infinity?
-            ( xc ? yc && xc[0] == yc[0] : !yc )
+            ( xc ? yc && xc[0] === yc[0] : !yc )
 
               // Return NaN.
               ? NaN
 
               // x is 0 or y is Infinity?
-              : xc && xc[0] == 0 || !yc
+              : xc && xc[0] === 0 || !yc
 
                 // Return +-0.
                 ? s * 0
@@ -949,7 +954,7 @@
                 // y is 0. Return +-Infinity.
                 : s / 0 )
 
-          : divide( xc, yc, xe - ye, s, 10 )
+          : divide( xc, yc, xe - ye, s, 10 );
     };
 
 
@@ -959,7 +964,7 @@
      */
     P['equals'] = P['eq'] = function ( n, b ) {
         id = 3;
-        return this['cmp']( n, b ) === 0
+        return this['cmp']( n, b ) === 0;
     };
 
 
@@ -968,7 +973,7 @@
      * rounded to a whole number in the direction of -Infinity.
      */
     P['floor'] = function () {
-        return setMode( this, 0, 3 )
+        return setMode( this, 0, 3 );
     };
 
 
@@ -978,7 +983,7 @@
      */
     P['greaterThan'] = P['gt'] = function ( n, b ) {
         id = 4;
-        return this['cmp']( n, b ) > 0
+        return this['cmp']( n, b ) > 0;
     };
 
 
@@ -988,7 +993,7 @@
      */
     P['greaterThanOrEqualTo'] = P['gte'] = function ( n, b ) {
         id = 5;
-        return ( b = this['cmp']( n, b ) ) == 1 || b === 0
+        return ( b = this['cmp']( n, b ) ) === 1 || b === 0;
     };
 
 
@@ -997,7 +1002,7 @@
      * returns false.
      */
     P['isFinite'] = P['isF'] = function () {
-        return !!this['c']
+        return !!this['c'];
     };
 
 
@@ -1006,7 +1011,7 @@
      * false.
      */
     P['isNaN'] = function () {
-        return !this['s']
+        return !this['s'];
     };
 
 
@@ -1015,7 +1020,7 @@
      * returns false.
      */
     P['isNegative'] = P['isNeg'] = function () {
-        return this['s'] < 0
+        return this['s'] < 0;
     };
 
 
@@ -1024,7 +1029,7 @@
      * false.
      */
     P['isZero'] = P['isZ'] = function () {
-        return !!this['c'] && this['c'][0] == 0
+        return !!this['c'] && this['c'][0] === 0;
     };
 
 
@@ -1034,7 +1039,7 @@
      */
     P['lessThan'] = P['lt'] = function ( n, b ) {
         id = 6;
-        return this['cmp']( n, b ) < 0
+        return this['cmp']( n, b ) < 0;
     };
 
 
@@ -1044,7 +1049,7 @@
      */
     P['lessThanOrEqualTo'] = P['lte'] = function ( n, b ) {
         id = 7;
-        return ( b = this['cmp']( n, b ) ) == -1 || b === 0
+        return ( b = this['cmp']( n, b ) ) === -1 || b === 0;
     };
 
 
@@ -1077,12 +1082,12 @@
 
         // Either NaN?
         if ( !a || !b ) {
-            return new BigNumber(NaN)
+            return new BigNumber(NaN);
         }
 
         // Signs differ?
-        if ( a != b ) {
-            return y['s'] = -b, x['plus'](y)
+        if ( a !== b ) {
+            return y['s'] = -b, x['plus'](y);
         }
 
         var xc = x['c'],
@@ -1094,7 +1099,7 @@
 
             // Either Infinity?
             if ( !xc || !yc ) {
-                return xc ? ( y['s'] = -b, y ) : new BigNumber( yc ? x : NaN )
+                return xc ? ( y['s'] = -b, y ) : new BigNumber( yc ? x : NaN );
             }
 
             // Either zero?
@@ -1110,7 +1115,7 @@
 
                     // Both are zero.
                     // IEEE 754 (2008) 6.3: n - n = -0 when rounding to -Infinity
-                    : ROUNDING_MODE == 3 ? -0 : 0 )
+                    : ROUNDING_MODE === 3 ? -0 : 0 );
             }
         }
 
@@ -1121,7 +1126,7 @@
 
             for ( d.reverse(), b = a; b--; d.push(0) ) {
             }
-            d.reverse()
+            d.reverse();
         } else {
 
             // Exponents equal. Check digit by digit.
@@ -1129,9 +1134,9 @@
 
             for ( a = b = 0; b < j; b++ ) {
 
-                if ( xc[b] != yc[b] ) {
+                if ( xc[b] !== yc[b] ) {
                     xLTy = xc[b] < yc[b];
-                    break
+                    break;
                 }
             }
         }
@@ -1139,7 +1144,7 @@
         // x < y? Point xc to the array of the bigger number.
         if ( xLTy ) {
             d = xc, xc = yc, yc = d;
-            y['s'] = -y['s']
+            y['s'] = -y['s'];
         }
 
         /*
@@ -1160,17 +1165,17 @@
                 for ( i = b; i && !xc[--i]; xc[i] = 9 ) {
                 }
                 --xc[i];
-                xc[b] += 10
+                xc[b] += 10;
             }
-            xc[b] -= yc[b]
+            xc[b] -= yc[b];
         }
 
         // Remove trailing zeros.
-        for ( ; xc[--j] == 0; xc.pop() ) {
+        for ( ; xc[--j] === 0; xc.pop() ) {
         }
 
         // Remove leading zeros and adjust exponent accordingly.
-        for ( ; xc[0] == 0; xc.shift(), --ye ) {
+        for ( ; xc[0] === 0; xc.shift(), --ye ) {
         }
 
         /*
@@ -1186,14 +1191,14 @@
              * n - n = +0  but  n - n = -0 when rounding towards -Infinity.
              */
             if ( !xc[0] ) {
-                y['s'] = ROUNDING_MODE == 3 ? -1 : 1
+                y['s'] = ROUNDING_MODE === 3 ? -1 : 1;
             }
 
             // Result is zero.
-            xc = [ye = 0]
+            xc = [ye = 0];
         }
 
-        return y['c'] = xc, y['e'] = ye, y
+        return y['c'] = xc, y['e'] = ye, y;
     };
 
 
@@ -1222,11 +1227,11 @@
         b = !i || !j || yc && !yc[0];
 
         if ( b || xc && !xc[0] ) {
-            return new BigNumber( b ? NaN : x )
+            return new BigNumber( b ? NaN : x );
         }
 
         x['s'] = y['s'] = 1;
-        b = y['cmp'](x) == 1;
+        b = y['cmp'](x) === 1;
         x['s'] = i, y['s'] = j;
 
         return b
@@ -1235,7 +1240,7 @@
             DECIMAL_PLACES = 0, ROUNDING_MODE = 1,
               x = x['div'](y),
                 DECIMAL_PLACES = i, ROUNDING_MODE = j,
-                  this['minus']( x['times'](y) ) )
+                  this['minus']( x['times'](y) ) );
     };
 
 
@@ -1246,7 +1251,7 @@
     P['negated'] = P['neg'] = function () {
         var x = new BigNumber(this);
 
-        return x['s'] = -x['s'] || null, x
+        return x['s'] = -x['s'] || null, x;
     };
 
 
@@ -1279,12 +1284,12 @@
 
         // Either NaN?
         if ( !a || !b ) {
-            return new BigNumber(NaN)
+            return new BigNumber(NaN);
         }
 
         // Signs differ?
-        if ( a != b ) {
-            return y['s'] = -b, x['minus'](y)
+        if ( a !== b ) {
+            return y['s'] = -b, x['minus'](y);
         }
 
         var xe = x['e'],
@@ -1298,7 +1303,7 @@
             if ( !xc || !yc ) {
 
                 // Return +-Infinity.
-                return new BigNumber( a / 0 )
+                return new BigNumber( a / 0 );
             }
 
             // Either zero?
@@ -1313,7 +1318,7 @@
                     ? x
 
                     // Both are zero. Return zero.
-                    : a * 0 )
+                    : a * 0 );
             }
         }
 
@@ -1324,12 +1329,12 @@
 
             for ( d.reverse(); a--; d.push(0) ) {
             }
-            d.reverse()
+            d.reverse();
         }
 
         // Point xc to the longer array.
         if ( xc.length - yc.length < 0 ) {
-            d = yc, yc = xc, xc = d
+            d = yc, yc = xc, xc = d;
         }
 
         /*
@@ -1349,15 +1354,15 @@
             if ( ++ye > MAX_EXP ) {
 
                 // Infinity.
-                xc = ye = null
+                xc = ye = null;
             }
         }
 
          // Remove trailing zeros.
-        for ( a = xc.length; xc[--a] == 0; xc.pop() ) {
+        for ( a = xc.length; xc[--a] === 0; xc.pop() ) {
         }
 
-        return y['c'] = xc, y['e'] = ye, y
+        return y['c'] = xc, y['e'] = ye, y;
     };
 
 
@@ -1371,7 +1376,7 @@
     P['toPower'] = P['pow'] = function ( e ) {
 
         // e to integer, avoiding NaN or Infinity becoming 0.
-        var i = e * 0 == 0 ? e | 0 : e,
+        var i = e * 0 === 0 ? e | 0 : e,
             x = new BigNumber(this),
             y = new BigNumber(ONE);
 
@@ -1386,7 +1391,7 @@
               * Include 'e !== 0' because on Opera -0 == parseFloat(-0) is false,
               * despite -0 === parseFloat(-0) && -0 == parseFloat('-0') is true.
               */
-             parse(e) != e && e !== 0 && !(i = NaN) ) &&
+             parse(e) !== ( +e ) && e !== 0 && !(i = NaN) ) &&
 
               // 'pow() exponent not an integer: {e}'
               // 'pow() exponent out of range: {e}'
@@ -1396,23 +1401,23 @@
                 !i ) {
 
             // i is +-Infinity, NaN or 0.
-            return new BigNumber( Math.pow( x['toS'](), i ) )
+            return new BigNumber( Math.pow( x['toS'](), i ) );
         }
 
         for ( i = i < 0 ? -i : i; ; ) {
 
             if ( i & 1 ) {
-                y = y['times'](x)
+                y = y['times'](x);
             }
             i >>= 1;
 
             if ( !i ) {
-                break
+                break;
             }
-            x = x['times'](x)
+            x = x['times'](x);
         }
 
-        return e < 0 ? ONE['div'](y) : y
+        return e < 0 ? ONE['div'](y) : y;
     };
 
 
@@ -1426,8 +1431,8 @@
      */
     P['round'] = function ( dp, rm ) {
 
-        dp = dp == null || ( ( ( outOfRange = dp < 0 || dp > MAX ) ||
-          parse(dp) != dp ) &&
+        dp = dp === null || typeof dp === 'undefined' || ( ( ( outOfRange = dp < 0 || dp > MAX ) ||
+          parse(dp) !== (+dp) ) &&
 
             // 'round() decimal places out of range: {dp}'
             // 'round() decimal places not an integer: {dp}'
@@ -1435,10 +1440,10 @@
               ? 0
               : dp | 0;
 
-        rm = rm == null || ( ( ( outOfRange = rm < 0 || rm > 8 ) ||
+        rm = rm === null || typeof rm === 'undefined' || ( ( ( outOfRange = rm < 0 || rm > 8 ) ||
 
           // Include '&& rm !== 0' because with Opera -0 == parseFloat(-0) is false.
-          parse(rm) != rm && rm !== 0 ) &&
+          parse(rm) !== (+rm) && rm !== 0 ) &&
 
             // 'round() mode not an integer: {rm}'
             // 'round() mode out of range: {rm}'
@@ -1446,7 +1451,7 @@
               ? ROUNDING_MODE
               : rm | 0;
 
-        return setMode( this, dp, rm )
+        return setMode( this, dp, rm );
     };
 
 
@@ -1462,7 +1467,7 @@
      * this BigNumber, rounded according to DECIMAL_PLACES and ROUNDING_MODE.
      */
     P['squareRoot'] = P['sqrt'] = function () {
-        var i, n, r, re, t,
+        var n, r, re, t,
             x = this,
             c = x['c'],
             s = x['s'],
@@ -1476,7 +1481,7 @@
 
             return new BigNumber( !s || s < 0 && ( !c || c[0] )
               ? NaN
-              : c ? x : 1 / 0 )
+              : c ? x : 1 / 0 );
         }
 
         // Initial estimate.
@@ -1487,27 +1492,27 @@
           Math.sqrt underflow/overflow?
           Pass x to Math.sqrt as integer, then adjust the exponent of the result.
          */
-        if ( s == 0 || s == 1 / 0 ) {
+        if ( s === 0 || s === 1 / 0 ) {
             n = c.join('');
 
             if ( !( n.length + e & 1 ) ) {
-                n += '0'
+                n += '0';
             }
             r = new BigNumber( Math.sqrt(n) + '' );
 
             // r may still not be finite.
             if ( !r['c'] ) {
-                r['c'] = [1]
+                r['c'] = [1];
             }
-            r['e'] = ( ( ( e + 1 ) / 2 ) | 0 ) - ( e < 0 || e & 1 )
+            r['e'] = ( ( ( e + 1 ) / 2 ) | 0 ) - ( e < 0 || e & 1 );
         } else {
-            r = new BigNumber( n = s.toString() )
+            r = new BigNumber( n = s.toString() );
         }
         re = r['e'];
         s = re + ( DECIMAL_PLACES += 4 );
 
         if ( s < 3 ) {
-            s = 0
+            s = 0;
         }
         e = s;
 
@@ -1531,26 +1536,26 @@
                   digits are 9999 or 4999 (i.e. approaching a rounding boundary)
                   continue the iteration.
                  */
-                if ( c[s] == 9 && c[s - 1] == 9 && c[s - 2] == 9 &&
-                        ( c[s - 3] == 9 || n && c[s - 3] == 4 ) ) {
+                if ( c[s] === 9 && c[s - 1] === 9 && c[s - 2] === 9 &&
+                        ( c[s - 3] === 9 || n && c[s - 3] === 4 ) ) {
 
                     /*
                       If 9999 on first run through, check to see if rounding up
                       gives the exact result as the nines may infinitely repeat.
                      */
-                    if ( n && c[s - 3] == 9 ) {
+                    if ( n && c[s - 3] === 9 ) {
                         t = r['round']( dp, 0 );
 
                         if ( t['times'](t)['eq'](x) ) {
                             ROUNDING_MODE = rm;
                             DECIMAL_PLACES = dp;
 
-                            return t
+                            return t;
                         }
                     }
                     DECIMAL_PLACES += 4;
                     s += 4;
-                    n = ''
+                    n = '';
                 } else {
 
                     /*
@@ -1559,25 +1564,25 @@
                       increment the 1st rounding digit to ensure correct rounding.
                      */
                     if ( !c[e] && !c[e - 1] && !c[e - 2] &&
-                            ( !c[e - 3] || c[e - 3] == 5 ) ) {
+                            ( !c[e - 3] || c[e - 3] === 5 ) ) {
 
                         // Truncate to the first rounding digit.
                         if ( c.length > e - 2 ) {
-                            c.length = e - 2
+                            c.length = e - 2;
                         }
 
                         if ( !r['times'](r)['eq'](x) ) {
 
                             while ( c.length < e - 3 ) {
-                                c.push(0)
+                                c.push(0);
                             }
-                            c[e - 3]++
+                            c[e - 3]++;
                         }
                     }
                     ROUNDING_MODE = rm;
                     rnd( r, DECIMAL_PLACES = dp, 10 );
 
-                    return r
+                    return r;
                 }
             }
         }
@@ -1613,7 +1618,7 @@
             j = y['e'],
             a = x['s'];
 
-        y['s'] = a == ( b = y['s'] ) ? 1 : -1;
+        y['s'] = a === ( b = y['s'] ) ? 1 : -1;
 
         // Either NaN/Infinity/0?
         if ( !i && ( !xc || !xc[0] ) || !j && ( !yc || !yc[0] ) ) {
@@ -1634,12 +1639,12 @@
                   ? y['s'] / 0
 
                   // x or y is 0. Return +-0.
-                  : y['s'] * 0 )
+                  : y['s'] * 0 );
         }
         y['e'] = i + j;
 
         if ( ( a = xc.length ) < ( b = yc.length ) ) {
-            c = xc, xc = yc, yc = c, j = a, a = b, b = j
+            c = xc, xc = yc, yc = c, j = a, a = b, b = j;
         }
 
         for ( j = a + b, c = []; j--; c.push(0) ) {
@@ -1656,7 +1661,7 @@
             }
 
             if ( b ) {
-                c[j] = ( c[j] + b ) % 10
+                c[j] = ( c[j] + b ) % 10;
             }
         }
 
@@ -1686,7 +1691,7 @@
             // Neither.
             : c;
 
-        return y
+        return y;
     };
 
 
@@ -1700,19 +1705,19 @@
     P['toExponential'] = P['toE'] = function ( dp ) {
 
         return format( this,
-          ( dp == null || ( ( outOfRange = dp < 0 || dp > MAX ) ||
+          ( dp === null || typeof dp === 'undefined' || ( ( outOfRange = dp < 0 || dp > MAX ) ||
 
             /*
              * Include '&& dp !== 0' because with Opera -0 == parseFloat(-0) is
              * false, despite -0 == parseFloat('-0') && 0 == -0 being true.
              */
-            parse(dp) != dp && dp !== 0 ) &&
+            parse(dp) !== (+dp) && dp !== 0 ) &&
 
               // 'toE() decimal places not an integer: {dp}'
               // 'toE() decimal places out of range: {dp}'
               !ifExceptionsThrow( dp, 'decimal places', 'toE' ) ) && this['c']
                 ? this['c'].length - 1
-                : dp | 0, 1 )
+                : dp | 0, 1 );
     };
 
 
@@ -1730,21 +1735,21 @@
         var n, str, d,
             x = this;
 
-        if ( !( dp == null || ( ( outOfRange = dp < 0 || dp > MAX ) ||
-            parse(dp) != dp && dp !== 0 ) &&
+        if ( !( dp === null || typeof dp === 'undefined' || ( ( outOfRange = dp < 0 || dp > MAX ) ||
+            parse(dp) !== (+dp) && dp !== 0 ) &&
 
             // 'toF() decimal places not an integer: {dp}'
             // 'toF() decimal places out of range: {dp}'
             !ifExceptionsThrow( dp, 'decimal places', 'toF' ) ) ) {
-              d = x['e'] + ( dp | 0 )
+              d = x['e'] + ( dp | 0 );
         }
 
         n = TO_EXP_NEG, dp = TO_EXP_POS;
         TO_EXP_NEG = -( TO_EXP_POS = 1 / 0 );
 
         // Note: str is initially undefined.
-        if ( d == str ) {
-            str = x['toS']()
+        if ( d === str ) {
+            str = x['toS']();
         } else {
             str = format( x, d );
 
@@ -1754,17 +1759,17 @@
 
                 // As e.g. -0 toFixed(3), will wrongly be returned as -0.000 from toString.
                 if ( !x['c'][0] ) {
-                    str = str.replace(/^-/, '')
+                    str = str.replace(/^-/, '');
 
                 // As e.g. -0.5 if rounded to -0 will cause toString to omit the minus sign.
                 } else if ( str.indexOf('-') < 0 ) {
-                    str = '-' + str
+                    str = '-' + str;
                 }
             }
         }
         TO_EXP_NEG = n, TO_EXP_POS = dp;
 
-        return str
+        return str;
     };
 
 
@@ -1791,13 +1796,13 @@
 
         // NaN, Infinity.
         if ( !xc ) {
-            return x['toS']()
+            return x['toS']();
         }
 
         e = d['e'] = xc.length - x['e'] - 1;
 
         // If max denominator is undefined or null...
-        if ( maxD == null ||
+        if ( maxD === null || typeof maxD === 'undefined' ||
 
              // or NaN...
              ( !( id = 12, n = new BigNumber(maxD) )['s'] ||
@@ -1816,7 +1821,7 @@
                      ( maxD = n )['cmp'](d) > 0 ) {
 
             // d is e.g. 10, 100, 1000, 10000... , n1 is 1.
-            maxD = e > 0 ? d : n1
+            maxD = e > 0 ? d : n1;
         }
 
         MAX_EXP = 1 / 0;
@@ -1826,8 +1831,8 @@
             q = n['div'](d);
             d2 = d0['plus']( q['times'](d1) );
 
-            if ( d2['cmp'](maxD) == 1 ) {
-                break
+            if ( d2['cmp'](maxD) === 1 ) {
+                break;
             }
 
             d0 = d1, d1 = d2;
@@ -1836,7 +1841,7 @@
             n0 = d2;
 
             d = n['minus']( q['times']( d2 = d ) );
-            n = d2
+            n = d2;
         }
 
         d2 = maxD['minus'](d0)['div'](d1);
@@ -1854,7 +1859,7 @@
           ? [ n1['toS'](), d1['toS']() ]
           : [ n0['toS'](), d0['toS']() ];
 
-        return MAX_EXP = exp, DECIMAL_PLACES = dp, frac
+        return MAX_EXP = exp, DECIMAL_PLACES = dp, frac;
     };
 
 
@@ -1873,14 +1878,14 @@
          * ERRORS false: Ignore sd if not a number or not in range.
          * Truncate non-integers.
          */
-        return sd == null || ( ( ( outOfRange = sd < 1 || sd > MAX ) ||
-          parse(sd) != sd ) &&
+        return sd === null || typeof sd === 'undefined' || ( ( ( outOfRange = sd < 1 || sd > MAX ) ||
+          parse(sd) !== (+sd) ) &&
 
             // 'toP() precision not an integer: {sd}'
             // 'toP() precision out of range: {sd}'
             !ifExceptionsThrow( sd, 'precision', 'toP' ) )
               ? this['toS']()
-              : format( this, --sd | 0, 2 )
+              : format( this, --sd | 0, 2 );
     };
 
 
@@ -1901,11 +1906,11 @@
 
         // Infinity or NaN?
         if ( xe === null ) {
-            str = x['s'] ? 'Infinity' : 'NaN'
+            str = x['s'] ? 'Infinity' : 'NaN';
 
         // Exponential format?
         } else if ( b === u && ( xe <= TO_EXP_NEG || xe >= TO_EXP_POS ) ) {
-            return format( x, x['c'].length - 1, 1 )
+            return format( x, x['c'].length - 1, 1 );
         } else {
             str = x['c'].join('');
 
@@ -1915,7 +1920,7 @@
                 // Prepend zeros.
                 for ( ; ++xe; str = '0' + str ) {
                 }
-                str = '0.' + str
+                str = '0.' + str;
 
             // Positive exponent?
             } else if ( strL = str.length, xe > 0 ) {
@@ -1926,41 +1931,41 @@
                     for ( xe -= strL; xe-- ; str += '0' ) {
                     }
                 } else if ( xe < strL ) {
-                    str = str.slice( 0, xe ) + '.' + str.slice(xe)
+                    str = str.slice( 0, xe ) + '.' + str.slice(xe);
                 }
 
             // Exponent zero.
             } else {
                 if ( u = str.charAt(0), strL > 1 ) {
-                    str = u + '.' + str.slice(1)
+                    str = u + '.' + str.slice(1);
 
                 // Avoid '-0'
-                } else if ( u == '0' ) {
-                    return u
+                } else if ( u === '0' ) {
+                    return u;
                 }
             }
 
-            if ( b != null ) {
+            if ( b !== null  && typeof b !== 'undefined') {
 
                 if ( !( outOfRange = !( b >= 2 && b < 65 ) ) &&
-                  ( b == (b | 0) || !ERRORS ) ) {
+                  ( ( +b ) === (b | 0) || !ERRORS ) ) {
                     str = convert( str, b | 0, 10, x['s'] );
 
                     // Avoid '-0'
-                    if ( str == '0' ) {
-                        return str
+                    if ( str === '0' ) {
+                        return str;
                     }
                 } else {
 
                     // 'toS() base not an integer: {b}'
                     // 'toS() base out of range: {b}'
-                    ifExceptionsThrow( b, 'base', 'toS' )
+                    ifExceptionsThrow( b, 'base', 'toS' );
                 }
             }
 
         }
 
-        return x['s'] < 0 ? '-' + str : str
+        return x['s'] < 0 ? '-' + str : str;
     };
 
 
@@ -1968,7 +1973,7 @@
      * Return as toString, but do not accept a base argument.
      */
     P['valueOf'] = function () {
-        return this['toS']()
+        return this['toS']();
     };
 
 
@@ -1987,18 +1992,17 @@
 
     // Node and other CommonJS-like environments that support module.exports.
     if ( typeof module !== 'undefined' && module.exports ) {
-        module.exports = BigNumber
+        module.exports = BigNumber;
 
     //AMD.
-    } else if ( typeof define == 'function' && define.amd ) {
+    } else if ( typeof define === 'function' && define.amd ) {
         define( function () {
-            return BigNumber
-        })
+            return BigNumber;
+        });
 
     //Browser.
     } else {
-        global['BigNumber'] = BigNumber
+        global['BigNumber'] = BigNumber;
     }
 
 })( this );
-
