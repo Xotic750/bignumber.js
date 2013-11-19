@@ -145,10 +145,10 @@
 
             if ( b != null ) {
 
-                if ( ( b == (b | 0) || !ERRORS ) &&
+                if ( ( b == Math.floor( b ) || !ERRORS ) &&
                   !( outOfRange = !( b >= 2 && b < 65 ) ) ) {
 
-                    digits = '[' + DIGITS.slice( 0, b = b | 0 ) + ']+';
+                    digits = '[' + DIGITS.slice( 0, b = Math.floor( b ) ) + ']+';
 
                     // Before non-decimal number validity test and base conversion
                     // remove the `.` from e.g. '1.', and replace e.g. '.1' with '0.1'.
@@ -321,7 +321,7 @@
         if ( has( p = 'DECIMAL_PLACES' ) ) {
 
             if ( inRange( v, 0, MAX ) ) {
-                DECIMAL_PLACES = v | 0
+                DECIMAL_PLACES = Math.floor( v )
             } else {
 
                 // 'config() DECIMAL_PLACES not an integer: {v}'
@@ -335,7 +335,7 @@
         if ( has( p = 'ROUNDING_MODE' ) ) {
 
             if ( inRange( v, 0, 8 ) ) {
-                ROUNDING_MODE = v | 0
+                ROUNDING_MODE = Math.floor( v )
             } else {
 
                 // 'config() ROUNDING_MODE not an integer: {v}'
@@ -1360,6 +1360,15 @@
         return y['c'] = xc, y['e'] = ye, y
     };
 
+    function trunc( n ) {
+        if (n < 0) {
+           n = Math.ceil( n );
+        } else {
+            n = Math.floor( n );
+        }
+
+        return n;
+    }
 
     /*
      * Return a BigNumber whose value is the value of this BigNumber raised to
@@ -1371,7 +1380,7 @@
     P['toPower'] = P['pow'] = function ( e ) {
 
         // e to integer, avoiding NaN or Infinity becoming 0.
-        var i = e * 0 == 0 ? e | 0 : e,
+        var i = e * 0 == 0 ? trunc( e ) : e,
             x = new BigNumber(this),
             y = new BigNumber(ONE);
 
@@ -1433,7 +1442,7 @@
             // 'round() decimal places not an integer: {dp}'
             !ifExceptionsThrow( dp, 'decimal places', 'round' ) )
               ? 0
-              : dp | 0;
+              : Math.floor( dp );
 
         rm = rm == null || ( ( ( outOfRange = rm < 0 || rm > 8 ) ||
 
@@ -1444,7 +1453,7 @@
             // 'round() mode out of range: {rm}'
             !ifExceptionsThrow( rm, 'mode', 'round' ) )
               ? ROUNDING_MODE
-              : rm | 0;
+              : Math.floor( rm );
 
         return setMode( this, dp, rm )
     };
@@ -1499,7 +1508,7 @@
             if ( !r['c'] ) {
                 r['c'] = [1]
             }
-            r['e'] = ( ( ( e + 1 ) / 2 ) | 0 ) - ( e < 0 || e & 1 )
+            r['e'] = Math.floor( ( e + 1 ) / 2 ) - ( e < 0 || e & 1 )
         } else {
             r = new BigNumber( n = s.toString() )
         }
@@ -1651,8 +1660,8 @@
             for ( b = 0, j = a + i;
                   j > i;
                   b = c[j] + yc[i] * xc[j - i - 1] + b,
-                  c[j--] = b % 10 | 0,
-                  b = b / 10 | 0 ) {
+                  c[j--] = Math.floor( b % 10 ),
+                  b = Math.floor( b / 10 ) ) {
             }
 
             if ( b ) {
@@ -1712,7 +1721,7 @@
               // 'toE() decimal places out of range: {dp}'
               !ifExceptionsThrow( dp, 'decimal places', 'toE' ) ) && this['c']
                 ? this['c'].length - 1
-                : dp | 0, 1 )
+                : Math.floor( dp ), 1 )
     };
 
 
@@ -1736,7 +1745,7 @@
             // 'toF() decimal places not an integer: {dp}'
             // 'toF() decimal places out of range: {dp}'
             !ifExceptionsThrow( dp, 'decimal places', 'toF' ) ) ) {
-              d = x['e'] + ( dp | 0 )
+              d = x['e'] + Math.floor( dp )
         }
 
         n = TO_EXP_NEG, dp = TO_EXP_POS;
@@ -1880,7 +1889,7 @@
             // 'toP() precision out of range: {sd}'
             !ifExceptionsThrow( sd, 'precision', 'toP' ) )
               ? this['toS']()
-              : format( this, --sd | 0, 2 )
+              : format( this, Math.floor(--sd), 2 )
     };
 
 
@@ -1943,8 +1952,8 @@
             if ( b != null ) {
 
                 if ( !( outOfRange = !( b >= 2 && b < 65 ) ) &&
-                  ( b == (b | 0) || !ERRORS ) ) {
-                    str = convert( str, b | 0, 10, x['s'] );
+                  ( b == Math.floor(b) || !ERRORS ) ) {
+                    str = convert( str, Math.floor(b), 10, x['s'] );
 
                     // Avoid '-0'
                     if ( str == '0' ) {
